@@ -1,0 +1,13 @@
+[package]
+authors = ["Felix 'Gronner' Bräunling <gronner@mailbox.org>"]
+categories = ["embedded", "no-std"]
+description = "An I2C driver for the SEN66 sensor in Rust."
+edition = "2024"
+license = "MIT OR Apache-2.0"
+keywords = ["sensor", "co2", "nox", "voc", "pm", "i2c"]
+name = "sen66-interface"
+readme = "README.md"
+repository = "https://github.com/Gronner/sen66-interface"
+version = "0.1.0"
+
+[dependencies]
