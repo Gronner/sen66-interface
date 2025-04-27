@@ -1,0 +1,91 @@
+name: "Integration Checks"
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Lint Git Commit Message
+        uses: wagoid/commitlint-github-action@v6
+  checking:
+    name: cargo check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Check Rust Errors
+        run: cargo check --features "blocking async"
+  formatting:
+    name: cargo fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+      - name: Check Code Formatting
+        uses: actions-rust-lang/rustfmt@v1
+  linting:
+    name: cargo clippy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy
+      - name: Check Code Formatting
+        run: cargo clippy --features "blocking async"
+  auditing:
+    name: cargo audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Audit Rust Dependencies
+        uses: actions-rust-lang/audit@v1
+  building:
+    name: cargo build
+    needs: [auditing, checking, formatting, linting]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Build library
+        run: cargo build --features "blocking async"
+  unittest:
+    name: unit tests
+    needs: building
+    runs-on: ubuntu-latest
+    container:
+      image: xd009642/tarpaulin:develop-nightly
+      options: --security-opt seccomp=unconfined
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Execute unit tests
+        run: cargo tarpaulin --fail-under 95 --out xml --features "blocking async"
+      - name: Generate coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          flags: unittests
+          fail_ci_if_error: true
