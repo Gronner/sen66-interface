@@ -1,14 +1,18 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+#![cfg_attr(not(test), no_std)]
+#![doc = include_str!("../README.md")]
+#![deny(missing_docs)]
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub mod command;
+pub mod configuration;
+pub mod data;
+pub mod error;
+mod interface;
+mod util;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+#[cfg(feature = "async")]
+/// Async interface for the SEN66
+pub use interface::asynch;
+
+#[cfg(feature = "blocking")]
+/// Blocking interface for the SEN66
+pub use interface::blocking;
