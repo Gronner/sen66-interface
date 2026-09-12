@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1](https://github.com/Gronner/sen66-interface/compare/v1.1.0...v1.1.1) - 2026-09-12
+
+### Fixed
+
+- *(ci)* fix errorneous SBOM filename
+
+### Other
+
+- *(ci)* move to commitpinned rust toolchain setup
+- *(ci)* prevent integration check running twice
+- *(ci)* add uploading SBOM on release
+- *(ci)* pin and update action's versions
+- *(deps)* update dependencies
+
 ## [1.1.0](https://github.com/Gronner/sen66-interface/compare/v1.0.0...v1.1.0) - 2025-04-28
 
 ### Added
